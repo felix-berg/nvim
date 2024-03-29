@@ -28,6 +28,12 @@ vim.opt.smartcase = true
 -- Set to relative numbering by default
 vim.opt.relativenumber = true
 
+-- Set default tabstop to 4
+vim.opt.shiftwidth = 4
+vim.opt.tabstop = 4
+vim.opt.expandtab = true
+vim.opt.wrapmargin = 20
+
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
 
@@ -56,3 +62,14 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 8
+
+vim.filetype.add {
+  extensions = {
+    ixx = 'cpp',
+    cppm = 'cpp',
+  },
+}
+
+vim.opt.syntax = 'enable'
+
+vim.g.tex_flavor = 'latex'

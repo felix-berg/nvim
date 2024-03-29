@@ -3,7 +3,17 @@
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
+
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+-- Shorthand to remove words
+vim.keymap.set('i', '<C-BS>', '<Esc>dbi')
+vim.keymap.set('i', '<C-Del>', '<Esc>dwi')
+
+-- fat fingers have hard time ok
+vim.keymap.set('n', '´', '$')
+vim.keymap.set('n', '0', '$') -- TODO: do something better
+vim.keymap.set('n', '½', '0')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
@@ -11,11 +21,19 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- Mappings for tabs
+-- Create mapping for tabs
 vim.keymap.set('n', '<leader>tn', vim.cmd.tabnew, { desc = 'Open a [n]ew [t]ab' })
 vim.keymap.set('n', '<leader>tq', vim.cmd.tabclose, { desc = 'Close current tab' })
-vim.keymap.set('n', '<M-l>', vim.cmd.tabnext, { desc = 'Move to the next tab' })
-vim.keymap.set('n', '<M-h>', vim.cmd.tabprevious, { desc = 'Move to the previous tab' })
+vim.keymap.set('n', '<leader>1', '1gt', { desc = 'Move to tab 1' })
+vim.keymap.set('n', '<leader>2', '2gt', { desc = 'Move to tab 2' })
+vim.keymap.set('n', '<leader>3', '3gt', { desc = 'Move to tab 3' })
+vim.keymap.set('n', '<leader>4', '4gt', { desc = 'Move to tab 4' })
+vim.keymap.set('n', '<leader>5', '5gt', { desc = 'Move to tab 5' })
+vim.keymap.set('n', '<leader>6', '6gt', { desc = 'Move to tab 6' })
+vim.keymap.set('n', '<leader>7', '7gt', { desc = 'Move to tab 7' })
+vim.keymap.set('n', '<leader>8', '8gt', { desc = 'Move to tab 8' })
+vim.keymap.set('n', '<leader>9', '9gt', { desc = 'Move to tab 9' })
+vim.keymap.set('n', '<leader>0', '<cmd>tablast<CR>', { desc = 'Move to tab 9' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -35,11 +53,9 @@ vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 vim.keymap.set('n', '<C-z>', '<cmd>echo "Don\'t press Ctrl+z you dumbo"<CR>')
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('i', '<left>', '<cmd>echo "Use Alt+h to move!!"<CR>')
+vim.keymap.set('i', '<right>', '<cmd>echo "Use Alt+l to move!!"<CR>')
+vim.keymap.set('i', '<up>', '<cmd>echo "Use Alt+k to move!!"<CR>')
+vim.keymap.set('i', '<down>', '<cmd>echo "Use Alt+j to move!!"<CR>')
+
+vim.keymap.set('n', '<leader>nr', '<cmd>set invrnu<CR>', { desc = 'Toggle relative numbering' })

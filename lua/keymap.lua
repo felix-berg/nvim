@@ -12,8 +12,10 @@ vim.keymap.set('i', '<C-Del>', '<Esc>dwi')
 
 -- fat fingers have hard time ok
 vim.keymap.set('n', '´', '$')
-vim.keymap.set('n', '0', '$') -- TODO: do something better
-vim.keymap.set('n', '½', '0')
+
+-- call :Run command
+vim.keymap.set('n', '<leader>ewr', '<cmd>WriteRun<CR>', { desc = 'Write and run the current file' })
+vim.keymap.set('n', '<leader>er', '<cmd>Run<CR>', { desc = 'Run the current file' })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })

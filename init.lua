@@ -7,7 +7,6 @@ vim.g.have_nerd_font = true
 require 'opts'
 require 'keymap'
 require 'autocmd'
--- require 'latexonsave'
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -21,6 +20,13 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-surround',
+  -- 'rstacruz/vim-closer', -- got annoying
+  {
+    'nvim-lua/plenary.nvim',
+    init = function()
+      require 'usercmd'
+    end,
+  },
   {
     'anuvyklack/help-vsplit.nvim',
     init = function()

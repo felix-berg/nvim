@@ -61,7 +61,7 @@ function CloseOutputWindow(window)
   outputWindows[window] = nil
 end
 
-local function initOutputWindow(identifier, recall)
+local function initOutputWindow(identifier)
   local origwin = vim.api.nvim_get_current_win()
 
   for win, obj in pairs(outputWindows) do
@@ -79,7 +79,6 @@ local function initOutputWindow(identifier, recall)
 
   outputWindows[window] = {
     identifier = identifier,
-    recall = recall,
   }
 
   vim.api.nvim_set_current_win(origwin)
@@ -182,9 +181,7 @@ local function runCpp(file)
     return
   end
 
-  local window = initOutputWindow(dir, function()
-    runCpp(file)
-  end)
+  local window = initOutputWindow(dir)
   local build = string.format('%s/build', dir)
 
   windowAppend(window, string.format('----- buildling C++ application in %s -----', dir))

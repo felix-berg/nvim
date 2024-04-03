@@ -67,7 +67,7 @@ return { -- LSP Configuration & Plugins
     local servers = {
       clangd = {
         filetypes = { 'cpp', 'cxx', 'ixx', 'mpp', 'cppm', 'c', 'h', 'hpp' },
-        cmd = { '/usr/local/bin/clangd' },
+        cmd = { 'clangd' },
       },
       texlab = {
         filetypes = { 'tex', 'bib' },

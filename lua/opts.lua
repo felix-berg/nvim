@@ -70,6 +70,5 @@ vim.filetype.add {
   },
 }
 
-vim.opt.syntax = 'enable'
-
-vim.g.tex_flavor = 'latex'
+-- netrw: hide dotfiles on startup
+vim.g.netrw_list_hide = '\\(^\\|\\s\\s\\)\\zs\\.\\S\\+'

@@ -27,10 +27,11 @@ local function clearWindow(window)
   vim.api.nvim_buf_set_lines(buffer, 0, -1, true, {})
 end
 
-local function outputstream(window)
+local function outputStream(log)
   return function(_, data)
-    local str = table.concat(data, '\n', 1, #data - 1)
-    windowAppend(window, str)
+    for i = 1, #data - 1, 1 do
+      log(data[i])
+    end
   end
 end
 
@@ -40,6 +41,11 @@ local function cmdToStr(cmd)
     str = string.format('%s %s', str, s)
   end
   return str
+end
+
+local function removeExtension(file)
+  local t = splitstr(file, '%.')
+  return table.concat(t, '', 1, #t - 1)
 end
 
 local outputWindows = {}
@@ -81,48 +87,40 @@ local function initOutputWindow(identifier, recall)
   return window
 end
 
-local function outputWinIsOpen(window)
-  return outputWindows[window] ~= nil
-end
-
-local function startCommandJob(window, cmd, on_exit)
+local function startCommandJob(log, cmd, on_exit)
   return vim.fn.jobstart(cmd, {
-    on_stdout = outputstream(window),
-    on_stderr = outputstream(window),
-    width = vim.api.nvim_win_get_width(window), -- width of internal pty
+    on_stdout = outputStream(log),
+    on_stderr = outputStream(log),
     on_exit = on_exit,
   })
 end
 
 local MAX_COMMAND_SECS = 1000000000000 -- (TODO: cmdline argument)
-local function sequentialCommandsImpl(window, iter, clb, starttime)
+local function sequentialCommandsImpl(log, iter, clb, starttime)
   local cmd = iter()
 
   if cmd == nil then
     clb(true)
     return
-  elseif not outputWinIsOpen(window) then
-    clb(false)
-    return
   elseif os.time() - starttime > MAX_COMMAND_SECS then
-    windowAppend(window, string.format("exceeded maximum time of %d ms while executing command: '%s'", MAX_COMMAND_SECS, cmdToStr(cmd)))
+    log(string.format("exceeded maximum time of %d ms while executing command: '%s'", MAX_COMMAND_SECS, cmdToStr(cmd)))
     clb(false)
     return
   end
 
-  startCommandJob(window, cmd, function(_, ec)
+  startCommandJob(log, cmd, function(_, ec)
     if ec ~= 0 then
       clb(false)
       return
     end
 
-    sequentialCommandsImpl(window, iter, function(success)
+    sequentialCommandsImpl(log, iter, function(success)
       clb(success)
     end, starttime)
   end)
 end
 
-local function sequentialCommands(window, list, callback)
+local function sequentialCommands(list, log, callback)
   local i = 1
 
   local cmditer = function()
@@ -135,7 +133,7 @@ local function sequentialCommands(window, list, callback)
     end
   end
 
-  sequentialCommandsImpl(window, cmditer, callback, os.time())
+  sequentialCommandsImpl(log, cmditer, callback, os.time())
 end
 
 local function matchesPattern(str, pattern)
@@ -190,7 +188,7 @@ local function runCpp(file)
   local build = string.format('%s/build', dir)
 
   windowAppend(window, string.format('----- buildling C++ application in %s -----', dir))
-  sequentialCommands(window, {
+  sequentialCommands({
     {
       'cmake',
       '-S',
@@ -208,7 +206,9 @@ local function runCpp(file)
       '-C',
       build,
     },
-  }, function(success)
+  }, function(str)
+    windowAppend(window, str)
+  end, function(success)
     if not success then
       windowAppend(window, '----- build failed, stopping... -----')
       return
@@ -221,9 +221,22 @@ local function runCpp(file)
     end
 
     windowAppend(window, string.format("\n----- running '%s' -----", exec))
-    sequentialCommands(window, { { exec } }, function(_)
+    sequentialCommands({ { exec } }, function(str)
+      windowAppend(window, str)
+    end, function(_)
       windowAppend(window, string.format '\n----- finished -----')
     end)
+  end)
+end
+
+local function runLatex(f)
+  local file = vim.fs.normalize(f)
+  sequentialCommands({
+    { 'pdflatex', '-interaction=nonstopmode', string.format('"%s"', file) },
+  }, function(str)
+    print(str)
+  end, function(_)
+    print '----- finished -----'
   end)
 end
 
@@ -233,6 +246,11 @@ local function run(file)
       name = 'C++ application',
       patterns = { '.*%.cpp', '.*/CMakeLists.txt', '.*%.hpp' },
       run = runCpp,
+    },
+    {
+      name = 'Latex document',
+      patterns = { '.*%.tex' },
+      run = runLatex,
     },
   }
 
@@ -264,4 +282,12 @@ vim.api.nvim_create_user_command('WriteRun', function()
 
   vim.cmd.write { file }
   run(file)
+end, {})
+
+vim.api.nvim_create_user_command('OpenPDF', function()
+  local file = vim.api.nvim_buf_get_name(0)
+  local pdf = string.format('%s.pdf', removeExtension(file))
+  vim.fn.jobstart({ 'xdg-open', string.format('"%s"', pdf) }, {
+    detach = true,
+  })
 end, {})

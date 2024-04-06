@@ -1,11 +1,9 @@
 -- TODO: bug - doesn't preserve empty lines
 local function splitstr(str, delim)
   local t = {}
-
   for substr in string.gmatch(str, '[^' .. delim .. ']+') do
     table.insert(t, substr)
   end
-
   return t
 end
 
@@ -45,7 +43,7 @@ end
 
 local function removeExtension(file)
   local t = splitstr(file, '%.')
-  return table.concat(t, '', 1, #t - 1)
+  return table.concat(t, '.', 1, #t - 1)
 end
 
 local outputWindows = {}
@@ -284,7 +282,7 @@ end, {})
 vim.api.nvim_create_user_command('OpenPDF', function()
   local file = vim.api.nvim_buf_get_name(0)
   local pdf = string.format('%s.pdf', removeExtension(file))
-  vim.fn.jobstart({ 'xdg-open', string.format('"%s"', pdf) }, {
+  vim.fn.jobstart({ 'xdg-open', pdf }, {
     detach = true,
   })
 end, {})

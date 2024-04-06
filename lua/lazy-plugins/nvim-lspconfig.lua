@@ -69,7 +69,6 @@ return { -- LSP Configuration & Plugins
         filetypes = { 'cpp', 'cxx', 'ixx', 'mpp', 'cppm', 'c', 'h', 'hpp' },
         cmd = { 'clangd' },
       },
-      semgrep = {},
       texlab = {
         filetypes = { 'tex', 'bib' },
         settings = {

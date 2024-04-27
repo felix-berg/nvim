@@ -1,9 +1,3 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
--- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = true
-
 require 'opts'
 require 'keymap'
 require 'autocmd'
@@ -20,7 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-surround',
-  -- 'rstacruz/vim-closer', -- got annoying
   {
     'nvim-lua/plenary.nvim',
     init = function()

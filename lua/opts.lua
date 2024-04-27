@@ -1,6 +1,12 @@
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
+-- Set to true if you have a Nerd Font installed
+vim.g.have_nerd_font = true
+
 -- Make line numbers default
 vim.opt.number = true
 
@@ -32,6 +38,7 @@ vim.opt.relativenumber = true
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.expandtab = true
+vim.bo.softtabstop = 4
 vim.opt.wrapmargin = 0 -- don't insert returns automatically
 
 -- Keep signcolumn on by default

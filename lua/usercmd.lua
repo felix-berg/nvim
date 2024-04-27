@@ -226,8 +226,11 @@ end
 
 local function runLatex(f)
   local file = vim.fs.normalize(f)
+  local dir = vim.fs.dirname(f)
+
   sequentialCommands({
-    { 'pdflatex', '-interaction=nonstopmode', string.format('"%s"', file) },
+    { 'mkdir', '-p', 'out' },
+    { 'pdflatex', '-interaction=nonstopmode', '-output-directory', string.format('%s/out', dir), string.format('"%s"', file) },
   }, function(str)
     print(str)
   end, function(_)
@@ -281,7 +284,10 @@ end, {})
 
 vim.api.nvim_create_user_command('OpenPDF', function()
   local file = vim.api.nvim_buf_get_name(0)
-  local pdf = string.format('%s.pdf', removeExtension(file))
+  local name = removeExtension(vim.fs.basename(file))
+  local outdir = string.format('%s/out', vim.fs.dirname(file))
+  local pdf = string.format('%s/%s.pdf', outdir, name)
+
   vim.fn.jobstart({ 'xdg-open', pdf }, {
     detach = true,
   })

@@ -156,12 +156,12 @@ local function dirIncludes(dir, filename)
   return false
 end
 
-local function outerCMakeDir(origin)
+local function outermostDirWith(filename, origin)
   assert(matchesPattern(origin, '/.*')) -- has to begin with '/'
   local dir = origin
   local result = nil
   while dir ~= '/' do
-    if dirIncludes(dir, 'CMakeLists.txt') then
+    if dirIncludes(dir, filename) then
       result = dir
     end
 
@@ -173,7 +173,7 @@ local function outerCMakeDir(origin)
 end
 
 local function runCpp(file)
-  local dir = outerCMakeDir(vim.fs.dirname(file))
+  local dir = outermostDirWith('CMakeLists.txt', vim.fs.dirname(file))
   if dir == nil then
     print '----- not in a directory with CMakeLists.txt. stopping... -----'
     return
@@ -238,6 +238,18 @@ local function runLatex(f)
   end)
 end
 
+local function runSbt(file)
+  local dir = outermostDirWith('build.sbt', vim.fs.dirname(file))
+  local window = initOutputWindow(dir)
+
+  sequentialCommands({
+    { 'bash', '-c', string.format('cd \"%s\" && sbt run', dir) }
+  },
+    function(str) windowAppend(window, str) end,
+     function(_) windowAppend(window, '\n---- finished ----') end
+  )
+end
+
 local function run(file)
   local runmap = {
     {
@@ -249,6 +261,11 @@ local function run(file)
       name = 'Latex document',
       patterns = { '.*%.tex' },
       run = runLatex,
+    },
+    {
+      name = 'Scala application',
+      patterns = { '.*%.scala', '.*%.sbt' },
+      run = runSbt,
     },
   }
 

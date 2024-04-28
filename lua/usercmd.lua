@@ -27,7 +27,7 @@ end
 
 local function outputStream(log)
   return function(_, data)
-    for i = 1, #data - 1, 1 do
+    for i = 1, #data, 1 do
       log(data[i])
     end
   end
@@ -69,7 +69,7 @@ local function initOutputWindow(identifier)
     end
   end
 
-  vim.cmd [[ vne ]]
+  vim.cmd [[ new ]]
   local window = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_win_get_buf(window)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'q', '<cmd>lua CloseOutputWindow()<CR>', { silent = false })

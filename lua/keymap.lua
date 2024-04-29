@@ -8,7 +8,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Shorthand to remove words
 vim.keymap.set('i', '<C-BS>', '<C-W>')
--- vim.keymap.set('i', '<C-Del>', '<Esc>dwi')
+vim.keymap.set('i', '<C-H>', '<C-W>')
 
 -- fat fingers have hard time ok
 vim.keymap.set('n', '´', '$')

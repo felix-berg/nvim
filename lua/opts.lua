@@ -32,6 +32,7 @@ vim.opt.relativenumber = true
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.expandtab = true
+vim.bo.softtabstop = 4
 vim.opt.wrapmargin = 0 -- don't insert returns automatically
 
 -- Keep signcolumn on by default

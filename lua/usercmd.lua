@@ -27,7 +27,7 @@ end
 
 local function outputStream(log)
   return function(_, data)
-    for i = 1, #data - 1, 1 do
+    for i = 1, #data, 1 do
       log(data[i])
     end
   end
@@ -69,7 +69,7 @@ local function initOutputWindow(identifier)
     end
   end
 
-  vim.cmd [[ vne ]]
+  vim.cmd [[ new ]]
   local window = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_win_get_buf(window)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'q', '<cmd>lua CloseOutputWindow()<CR>', { silent = false })
@@ -156,12 +156,12 @@ local function dirIncludes(dir, filename)
   return false
 end
 
-local function outerCMakeDir(origin)
+local function outermostDirWith(filename, origin)
   assert(matchesPattern(origin, '/.*')) -- has to begin with '/'
   local dir = origin
   local result = nil
   while dir ~= '/' do
-    if dirIncludes(dir, 'CMakeLists.txt') then
+    if dirIncludes(dir, filename) then
       result = dir
     end
 
@@ -173,7 +173,7 @@ local function outerCMakeDir(origin)
 end
 
 local function runCpp(file)
-  local dir = outerCMakeDir(vim.fs.dirname(file))
+  local dir = outermostDirWith('CMakeLists.txt', vim.fs.dirname(file))
   if dir == nil then
     print '----- not in a directory with CMakeLists.txt. stopping... -----'
     return
@@ -226,13 +226,28 @@ end
 
 local function runLatex(f)
   local file = vim.fs.normalize(f)
+  local dir = vim.fs.dirname(f)
+
   sequentialCommands({
-    { 'pdflatex', '-interaction=nonstopmode', string.format('"%s"', file) },
+    { 'mkdir', '-p', 'out' },
+    { 'pdflatex', '-interaction=nonstopmode', '-output-directory', string.format('%s/out', dir), string.format('"%s"', file) },
   }, function(str)
     print(str)
   end, function(_)
     print '----- finished -----'
   end)
+end
+
+local function runSbt(file)
+  local dir = outermostDirWith('build.sbt', vim.fs.dirname(file))
+  local window = initOutputWindow(dir)
+
+  sequentialCommands({
+    { 'bash', '-c', string.format('cd \"%s\" && sbt run', dir) }
+  },
+    function(str) windowAppend(window, str) end,
+     function(_) windowAppend(window, '\n---- finished ----') end
+  )
 end
 
 local function run(file)
@@ -246,6 +261,11 @@ local function run(file)
       name = 'Latex document',
       patterns = { '.*%.tex' },
       run = runLatex,
+    },
+    {
+      name = 'Scala application',
+      patterns = { '.*%.scala', '.*%.sbt' },
+      run = runSbt,
     },
   }
 
@@ -281,7 +301,10 @@ end, {})
 
 vim.api.nvim_create_user_command('OpenPDF', function()
   local file = vim.api.nvim_buf_get_name(0)
-  local pdf = string.format('%s.pdf', removeExtension(file))
+  local name = removeExtension(vim.fs.basename(file))
+  local outdir = string.format('%s/out', vim.fs.dirname(file))
+  local pdf = string.format('%s/%s.pdf', outdir, name)
+
   vim.fn.jobstart({ 'xdg-open', pdf }, {
     detach = true,
   })

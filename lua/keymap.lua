@@ -17,6 +17,11 @@ vim.keymap.set('n', '´', '$')
 vim.keymap.set('n', '<leader>ewr', '<cmd>WriteRun<CR>', { desc = 'Write and run the current file' })
 vim.keymap.set('n', '<leader>er', '<cmd>Run<CR>', { desc = 'Run the current file' })
 
+-- call ObsidianPasteImg
+vim.keymap.set('n', '<leader>op', '<cmd>ObsidianPasteImg<CR><CR><CR>', {
+  desc = 'Paste image into Obsidian file'
+})
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })

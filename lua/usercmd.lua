@@ -47,6 +47,7 @@ local function removeExtension(file)
 end
 
 local outputWindows = {}
+local commandJobs = {}
 
 function CloseOutputWindow(window)
   if window == nil then
@@ -105,7 +106,7 @@ local function sequentialCommandsImpl(log, iter, clb, starttime)
     return
   end
 
-  startCommandJob(log, cmd, function(_, ec)
+  local jobid = startCommandJob(log, cmd, function(_, ec)
     if ec ~= 0 then
       clb(false)
       return
@@ -115,6 +116,8 @@ local function sequentialCommandsImpl(log, iter, clb, starttime)
       clb(success)
     end, starttime)
   end)
+
+  table.insert(commandJobs, jobid)
 end
 
 local function sequentialCommands(list, log, callback)
@@ -297,6 +300,12 @@ vim.api.nvim_create_user_command('WriteRun', function()
 
   vim.cmd.write { file }
   run(file)
+end, {})
+
+vim.api.nvim_create_user_command('KillJobs', function()
+  for _, job in ipairs(commandJobs) do
+    vim.fn.jobstop(job)
+  end
 end, {})
 
 vim.api.nvim_create_user_command('OpenPDF', function()

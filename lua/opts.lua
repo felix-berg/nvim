@@ -35,11 +35,11 @@ vim.opt.smartcase = true
 -- Set to relative numbering by default
 vim.opt.relativenumber = true
 
--- Set default tabstop to 4
-vim.opt.shiftwidth = 4
-vim.opt.tabstop = 4
+-- Set default tabstop to 2
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
 vim.opt.expandtab = true
-vim.bo.softtabstop = 4
+vim.bo.softtabstop = 2
 vim.opt.wrapmargin = 0 -- don't insert returns automatically
 vim.opt.wrap = false
 

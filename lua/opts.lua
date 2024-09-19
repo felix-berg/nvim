@@ -41,6 +41,7 @@ vim.opt.tabstop = 4
 vim.opt.expandtab = true
 vim.bo.softtabstop = 4
 vim.opt.wrapmargin = 0 -- don't insert returns automatically
+vim.opt.wrap = false
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'

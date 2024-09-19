@@ -92,6 +92,9 @@ return { -- LSP Configuration & Plugins
           },
         },
       },
+
+      r_language_server = {
+      }
     }
 
     local local_servers = {

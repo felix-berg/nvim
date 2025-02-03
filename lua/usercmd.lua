@@ -122,4 +122,3 @@ vim.api.nvim_create_user_command('WriteRun', function()
   vim.cmd.write { file }
   run(file)
 end, {})
-

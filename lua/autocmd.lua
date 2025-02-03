@@ -11,8 +11,23 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-vim.api.nvim_create_autocmd('BufWrite', {
+local isQuitting = false
+
+vim.api.nvim_create_autocmd('VimLeavePre', {
+  desc = 'Set `isQuitting`',
+  pattern = { '*' },
+  callback = function()
+    isQuitting = true
+  end,
+})
+
+vim.api.nvim_create_autocmd('BufWritePost', {
   desc = 'Auto-exec latex',
   pattern = { '*.tex' },
-  command = 'Run',
+  callback = function()
+    if isQuitting then
+      return
+    end
+    vim.cmd [[ Run ]]
+  end,
 })

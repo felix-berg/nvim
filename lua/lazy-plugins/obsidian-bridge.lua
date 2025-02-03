@@ -3,7 +3,7 @@ return {
   dependencies = { "nvim-telescope/telescope.nvim" },
   config = function()
     require("obsidian-bridge").setup({
-      scroll_sync = true,
+      scroll_sync = false,
     })
   end,
   event = {

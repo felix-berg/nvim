@@ -92,15 +92,15 @@ return { -- LSP Configuration & Plugins
           },
         },
       },
-
-      r_language_server = {
-      }
     }
 
+
+    local llvm_install_dir = os.getenv('FB_LLVM_INSTALL_DIR')
+    assert(llvm_install_dir ~= nil, "FB_LLVM_INSTALL_DIR is not set")
     local local_servers = {
       clangd = {
         filetypes = { 'cpp', 'cxx', 'ixx', 'mpp', 'cppm', 'c', 'h', 'hpp' },
-        cmd = { 'clangd' },
+        cmd = { string.format("%s/bin/clangd", llvm_install_dir) }
       },
       metals = require('lspconfig.server_configurations.metals').default_config,
     }
@@ -118,6 +118,7 @@ return { -- LSP Configuration & Plugins
     local ensure_installed = vim.tbl_keys(mason_servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
+      'r_language_server'
     })
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }

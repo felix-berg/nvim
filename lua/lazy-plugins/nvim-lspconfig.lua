@@ -102,7 +102,7 @@ return { -- LSP Configuration & Plugins
         filetypes = { 'cpp', 'cxx', 'ixx', 'mpp', 'cppm', 'c', 'h', 'hpp' },
         cmd = { string.format("%s/bin/clangd", llvm_install_dir) }
       },
-      metals = require('lspconfig.server_configurations.metals').default_config,
+      metals = require('lspconfig.configs.metals').default_config,
     }
 
     -- Ensure the servers and tools above are installed

@@ -1,6 +1,5 @@
 return {
   "oflisback/obsidian-bridge.nvim",
-  dependencies = { "nvim-telescope/telescope.nvim" },
   config = function()
     require("obsidian-bridge").setup({
       scroll_sync = false,
@@ -12,6 +11,7 @@ return {
   },
   lazy = true,
   dependencies = {
-    "nvim-lua/plenary.nvim",
+    "nvim-telescope/telescope.nvim",
+    "nvim-lua/plenary.nvim"
   },
 }

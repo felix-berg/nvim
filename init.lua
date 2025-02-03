@@ -21,12 +21,6 @@ require('lazy').setup({
       require 'usercmd'
     end,
   },
-  {
-    'anuvyklack/help-vsplit.nvim',
-    init = function()
-      require('help-vsplit').setup()
-    end,
-  },
   { -- You can easily change to a different colorscheme.
     'Mofiqul/vscode.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
